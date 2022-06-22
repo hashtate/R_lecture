@@ -1,0 +1,133 @@
+---
+title: "day0622"
+output:
+  html_document:
+    keep_md: true
+date: '2022-06-22'
+editor_options: 
+  chunk_output_type: console'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+#가장 먼저 라이브러리 불러오기
+```{r}
+library(dplyr)
+library(ggplot2)
+glimpse(iris)
+```
+#데이터를 불러오기 
+```{r}
+exam_na <- read.csv("r/exam_na.csv")
+```
+
+#결측치 확인
+is.na() : () 안에 검증하려는 데이터ㄱㄱ 
+```{r}
+is.na(exam_na)
+```
+
+
+#결측치 빈도 구하기
+table() : 빈도 구하기
+FALSE : 결측치가 아닌 것 TRUE : 결측치 
+```{r}
+table(is.na(exam_na))
+table(is.na(exam_na$korean))
+summary(is.na(exam_na))
+```
+
+#결측치 처리방법
+1. 제거하고 처리하기 메인 X
+
+2. 다른 값으로 대체하기 메인 O 
+  - 평균 입력 
+  
+# 결측치를 제외하고 분석하기 
+-160p
+na.rm = T : 결측치가 있으면 제거해 주세요
+```{r}
+mean(exam_na$korean, na.rm = T)
+```
+
+na.omit() : 결측치가 있는 행을 모두 제외
+-가급적 쓰지 말 것 로스가 너무 많다 
+
+filter() : 결측치가 없는 행만 추출 
+! : 반대. : 결측치가 있는 행만 추출
+
+```{r}
+exam_na %>% filter(is.na(korean))
+
+```
+
+```{r}
+exam_na %>% filter(!is.na(korean))
+
+```
+
+# 결측치를 다른 값으로 대체하기 
+- imputation 
+- imputation 참고자료
+  + [A Solution to Missing Data: Imputation Using R](https://www.kdnuggets.com/2017/09/missing-data-imputation-using-r.html)
+  + [R 결측값(NA) 제거, 대체 방법](https://velog.io/@lifeisbeautiful/R-%EA%B2%B0%EC%B8%A1%EA%B0%92NA-%EC%A0%9C%EA%B1%B0-%EB%8C%80%EC%B2%B4-%EB%B0%A9%EB%B2%95)
+  
+# 이상치
+데이터의 특정 값이 이상이 있다. 무언가 이상이 있다. 
+case 1 : 정해진 범주에서 벗어난 데이터
+ 2000년 4월 30일 -> 2000년 40월 30일 : 이상 데이터 
+
+case 2 : 숫자 / 아웃라이어(outlier) / 극단값 
+ 평균 : 평균임금 320만원 / 손흥민 임금 몇십억 
+ ```{r}
+ mpg1_out <- read.csv("r/mpg1_out.csv")
+ glimpse(mpg1_out)
+ ```
+ -trans의 갯수를 구하자 
+ ```{r}
+ table(mpg1_out$trans)
+ ```
+3은 4개밖에 없음 결측치 처리를 하고 싶음 
+
+-ifelse : 만약 ~라면, 내가 무엇을 할 것이다. (가정)
+ 만약 trans의 값이 3이라면, 결측치로 바꿔주세요. 나머지는 그대로 
+```{r}
+mpg1_out$trans <- ifelse(mpg1_out$trans == 3, NA, mpg1_out$trans)
+table(is.na(mpg1_out$trans))
+```
+
+결측치 제거 
+```{r}
+result <- mpg1_out %>% filter(!is.na(trans))
+table(is.na(result$trans))
+```
+
+#극단치 처리  
+숫자 데이터 boxplot()
+boxpolt() 함수를 통해서 극단치가 있는지 없는지 확인 가능 
+IQR : 3사분위 - 1사분위 
+경계값 : IQR * 1.5 
+  IQR + IQR * : 상한 / IQR - IQR * : 하한 
+   
+  네모 박스 안 부분이 중앙값 
+  슬래쉬가 경계값 (상한, 하한)
+  도트가 극단치
+  
+```{r}
+mpg1 <- read.csv("r/mpg1.csv")
+boxplot(mpg$cty)
+boxplot(mpg1$cty)$stats
+```
+
+```{r}
+boxplot(mpg1$hwy)
+boxplot(mpg1$hwy)$stats
+```
+
+```{r}
+boxplot(mpg1$cty , mpg1$hwy)
+boxplot(mpg1$cty , mpg1$hwy)$stats
+```
+
+

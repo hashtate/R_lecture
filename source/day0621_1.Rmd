@@ -1,0 +1,141 @@
+---
+title: "day0620_1"
+output:
+  html_document:
+    keep_md: true
+date: '2022-06-21'
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#데이터 가공  
+98p 분석 프로세스 
+-데이터 전처리를 위한 도구 dplyr
+-데이터 전처리를 위한 도구 data.table 
+-처리속도 차이 
+-deplyr : 10G 이내 
+-data.table : 50GB 이상 
+
+-배움의 측면 
+-deplyr : 매우 쉽고 
+-data.table : 어렵다
+
+#라이브러리 불러오기 
+
+install.packages("dplyr")
+
+```{r}
+library(dplyr)
+mpg1 <- read.csv("r/mpg1.csv", stringsAsFactors = F)
+```
+
+
+```{r}
+data2 <- mpg1 %>% 
+  select(drv, cty, hwy) %>%
+  filter(drv == "f")
+```
+-mpg1 중 drv, cty, hwy 를 선택하겠다, drv는 f로만 표현하겠다.
+%>% - 파이프 연산자 
+
+-select : 컬럼명 추출 
+-filter : 행 추출 (조건식)
+-gruop by : 
+-summarize() : 
+
+```{r}
+data3 <- select(mpg1, drv, cty, hwy)
+data3 <- filter(data3, drv == "f")
+```
+위 내용과 똑같지만 번거로움 
+
+```{r}
+glimpse(iris)
+iris%>%filter(Species == "setosa")
+```
+
+
+```{r}
+data2 <- mpg1 %>% 
+  select(drv, cty, hwy) %>%
+  filter(drv == "f")
+
+data3 <- select(mpg1, drv, cty, hwy)
+data3 <- filter(data3, drv == "f")
+```
+
+```{r}
+mpg1_byhash <- mpg1%>%
+  rename(transmissions= trans,
+         drive_method = drv,
+         city = cty,
+         highway = hwy)
+str(mpg1_byhash)
+
+mpg1_byhash_1 <- rename(mpg1 , transmission = trans,
+                       drivemethod = drv,
+                       city = cty,
+                       highway = hwy)
+```
+-변수 이름 바꾸기
+
+```{r} 
+count(mpg1,trans)
+table(mpg1$trans)
+```
+-빈도분석 : count
+```{r}
+class(count(mpg1,trans))  
+class(table(mpg1$trans))
+```
+- 1.데이터 프레임 2. 테이블
+```{r}
+box <- mpg1 %>%select(manufacturer,trans,cty)
+artbox <- mpg1 %>% select(trans,hwy)
+```
+-필요한 열 추출
+```{r}
+artbox2 <- mpg1 %>% select(-trans)
+artbox3 <- select(artbox2,-hwy)
+```
+-불필요 열 삭제 
+
+```{r}
+mpg1%>%slice(1,2)
+slice(mpg1,1,2)
+```
+-행 추출
+```{r}
+glimpse(iris)
+iris%>%filter(Species == "setosa")
+iris%>% 
+  filter(Species != "virginica") %>%
+  select(Sepal.Length, Sepal.Width) %>%
+  filter(Sepal.Length > 5.0) %>%
+  mutate(total = Sepal.Length + Sepal.Width) -> datahash 
+```
+-데이터 미리보기 
+
+```{r}
+mpg1 %>%
+  summarise(avg = mean(cty) , #평균 
+            total = sum(cty) , #총합
+            med = median(cty) , #분석값
+            count = n()) #중간값
+```
+-121p
+```{r}
+mpg2 <- mpg1 %>%
+  mutate(total = cty + hwy) 
+
+mpg3 <- mpg1 %>%
+  mutate(total = cty - hwy) 
+
+```
+-파생변수
+
+

@@ -1,0 +1,178 @@
+1+1 
+
+a = 1 ##변수저장, 객체저장 이것을 메모리에 올려서 1차저장 필요할때마다 씀
+b = 1 ##삭제 방법 빗자루 모양 아이콘 클릭, 램에 저장된걸 삭제한다 
+a + b
+
+iris <- iris
+
+str(iris)
+
+#벡터
+num_vector = c(1,2,3) ## 숫자 1,2,3, 이 벡터에 저장되어 있다 
+num_vector2 = c(5,6,7)
+num_vector[1] + num_vector[2] 
+num_vector[1] + num_vector2[1] 
+
+a <- "hello"
+a
+b = "im not"
+b
+c <- "why"
+c
+
+#문자열 벡터 
+char_vector <- c("hi", "bye")
+char_vector
+char_vector[2] #숫자 1,2 인덱스 1은 hi 2는 bye
+class(char_vector) #벡터의 유형을 알 수 있다. "character" = 문자열
+
+#남이 만든 함수를 쓰려면 , 입력조건 
+
+logical_vector <- c(TRUE, FALSE) #논리형 벡터 
+logical_vector 
+class(logical_vector)
+
+
+##문자가 들어가면 다 문자열 데이터로 바뀐다 
+
+a <- c(1,2, "hello")
+class(a)
+## "character"
+
+
+# 명목형 자료형 Factor
+locaiton_vector <- c("서울", "인천", "부산")
+factor_location_vector <- factor(locaiton_vector)
+factor_location_vector
+
+class(factor_location_vector)
+help(factor)
+
+# 순서형 자료형 Factor
+temperature_factor <- c("기온높음", 
+                        "기온보통", 
+                        "기온낮음", 
+                        "기온높음", 
+                        "기온보통", 
+                        "기온보통")
+
+temperature_factor
+
+factor_temperature_factor <- factor(temperature_factor, 
+                                    ordered = TRUE, 
+                                    levels  = c("기온보통", 
+                                                "기온낮음", 
+                                                "기온높음"))
+factor_temperature_factor
+class(factor_temperature_factor)
+class(factor_location_vector)
+
+### 데이터 프레임 
+## 엑셀데이터 
+
+no = c(1,2,3,4,5)
+sex = c("male", "female", "male", "male", "female")
+korean = c(87, 92, 95, 81, 87)
+
+exam = data.frame(no, sex, korean)
+
+#데이터 내보내기 & 불러오기 
+#경로 (저장 위치)
+#getwd() 경로 확인법 
+write.csv(x = exam, file = "temp.csv") #내보내기 함수 
+
+#데이터 불러오기 
+exam2 = read.csv("temp.csv") #불러오기 함수 
+getwd() #현재경로 표시 
+# 51p
+temp = read.csv("exam.csv") #SET AS WORKING DIRECTORY 누르고 불러오기
+str(temp) #(전체 표 설정)
+
+
+# 달러표시 달면, 벡터로 변환 (벡터로 출력을 하겠다)
+exam$no 
+exam$sex[2]
+
+# 데이터 타입 
+class(exam$sex)
+class(exam$no)
+
+str(exam) #한번에 , 효율적 몇개든간에 한번에 출력됨 
+
+##exam = data.frame(no, sex, korean)
+##str(exam)
+##이 두 줄이면 데이터 삽입 출력 가능 
+
+###49p - 55p하는 중 
+sex <- c("male", "female")
+korean <- c(87,92)
+english <- c(88,95)
+exam_a <- data.frame(sex,korean, english)
+
+exam_a
+
+exam_b <- data.frame(sex = c("male", "female"),
+                     korean = c(87,92),
+                     english = c(88,95))
+
+science <- c(84,95)
+exam_c <- data.frame(sex = c("male","female"),
+                     korean = c(87,92),
+                     english = c(88,95),
+                     science = c(84,95))
+
+math <- c(100, 85)
+exam_d <- data.frame(sex = c("male","female"),
+                     korean = c(87,92),
+                     english = c(88,95),
+                     science = c(84,95),
+                     math = c(100,85))
+no <- c(1,2)
+exam_final <- data.frame(no = c(1,2),
+                         sex = c("male","female"),
+                        korean = c(87,92),
+                        english = c(88,95),
+                        science = c(84,95),
+                        math = c(100,85))
+
+
+exam_final[2,c(3,4)] #두번째 학생의 3,4 성적을 알고싶다 
+exam_final[1,c(5,6)] #첫 번째 학생의 4,5 성적을 알고싶다
+exam_final[1,c(1,2,3,4,5,6)] #첫 번쨰 학생의 전체 성적을 알고싶다
+exam_final[c(1,2),4] #두 학생의 4번째 과목 성적을 알고싶다
+exam_final[c(1,2),c(5,6)] #두 학생의 5,6번 과목의 성적을 알고싶다 
+
+
+#함수 다운로드 install.packages() 함수 사용 library()
+install.packages("ggplot2")
+library(ggplot2)
+exonomics <- ggplot2::economics
+
+
+#66p 여기서 잠깐 중요 
+#데이터 분량이 많을때는 read.csv() 보다 fread()
+#fread() 는 data.table 의 패키지 안에 있어서 다운로드 받고 활성화 해야함
+
+install.packages("data.table")
+library(data.table)
+
+#엑셀파일 불러오기 
+install.packages("readxl")
+library(readxl)
+
+read_excel("student_xl.xlsx")
+
+#엑셀 파일에 있는 복수의 시트에서 특정 시트 가져오기 
+read_excel("student1_xl.xlsx") #첫 번째 시트 가져온거임 
+read_excel("student1_xl.xlsx" , sheet = 2) #두 번째 시트 가져온거임
+
+#69p txt 파일 불러오기 
+#73p spss 파일 불러오기 
+install.packages("foreign")
+library(foreign)   
+read.spss("student.sav")  
+studentspss <- read.spss("student.sav") # <- data파일에 삽입
+class(studentspss)
+as.data.frame(studentspss) #형변환 이런것도 있다~
+

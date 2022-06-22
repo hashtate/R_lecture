@@ -1,0 +1,180 @@
+---
+title: "day0622_1"
+output:
+  html_document:
+    keep_md: true
+date: '2022-06-22'
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+#ggplot2 강의 (데이터 시각화)
+-데이터 불러오기 
+```{r}
+library(readxl)
+library(ggplot2)
+who_disease <- read_xlsx("r/who_disease.xlsx") 
+
+#기본 시각화  
+ggplot(who_disease, aes(x = year,
+                        y = cases)) +
+  #이제 그래프 종류 선택하자 
+  geom_point()
+
+?geom_point
+
+
+  #옵션 1. 투명도 주기 : alpha
+ggplot(who_disease, aes(x = year,
+                        y = cases)) +
+  geom_point(alpha = 0.5)
+
+  #옵션 2. 색상변화 : color
+
+ggplot(who_disease, aes(x = year,
+                        y = cases)) +
+  geom_point(alpha = 0.5, colour = "pink")
+
+ggplot(who_disease, aes(x = year,
+                        y = cases)) +
+  geom_point(alpha = 0.5, 
+             colour = "pink")
+
+```
+
+- colour 입력 위치
+  -geom_point(colour)
+  -aes(x, y, colour + 컬럼명)
+  
+```{r}
+  str(iris)
+  ggplot(iris, aes(x = Sepal.Length, 
+                   y = Sepal.Width, 
+                   colour = Species)) + 
+  geom_point()
+```
+
+-산점도 : x축도 수치형 데이터(연속형), y축도 수치형 데이터(연속형)
+
+```{r}
+ggplot(who_disease, aes(x = year,
+                        y = cases)) +
+  geom_point()
+```
+-히스토그램 
+  질병 데이터 region = AMR , year = 1980, disease = 백잏래(pertussis)
+  cases > 0 
+  
+```{r}
+library(dplyr)
+str(who_disease)
+who_disease %>% 
+  filter(region == 'AMR',
+         year == 1980, 
+         disease == 'pertussis', 
+         cases > 0) -> data2
+ggplot(data2, aes(x =cases)) + 
+  geom_histogram(fill = "pink")
+
+ggplot(data2,aes(x = country , y = cases)) +
+  geom_col(fill= "grey") + 
+  coord_flip() #자빠뜨리기 
+```
+```{r}
+library(ggplot2)
+str(diamonds)
+ggplot(data = diamonds, aes( x = carat,
+                             y = price ))  +
+  geom_point()
+
+```
+
+```{r}
+ggplot(diamonds, aes(x = cut)) + 
+  geom_bar(colour = "blue" , 
+           fill = "pink" , 
+            alpha = 0.5)
+
+```
+#ggplot2 정교하게 그리기 
+
+-막대그래프에 2개 범주 내용 반영하기 
+```{r}
+library(ggplot2)
+
+ggplot(diamonds, aes(x = color, fill = cut)) +
+  geom_bar(position = "dodge") #fill or dodge 선택
+```
+
+#219p
+선 그래프에 2개 범주 내용 반영 
+```{r}
+leisure <- read.csv("r/leisure.csv")
+str(leisure)
+```
+
+```{r}
+ggplot(data = leisure, aes( x = age,
+                            y = expense,
+                            col = sex)) +
+  geom_line(size = 0.87,
+            linetype = 1)
+
+```
+
+#막대 그래프의 순서 변경 
+-reorder() : 
+```{r}
+mpg1 <- read.csv("r/mpg1.csv", 
+                 stringsAsFactors = F)
+#데이터 가공 
+drv_hwy <- mpg1 %>% 
+  group_by(drv) %>%
+  summarise(mean_hwy = mean(hwy))
+
+drv_hwy
+```
+`
+```{r}
+#기본그래프 
+ggplot(data = drv_hwy, aes(x = drv, 
+                           y = mean_hwy)) +
+  geom_col() 
+
+#오름차순 
+ggplot(data = drv_hwy, aes(x = reorder(drv, mean_hwy),
+                           y = mean_hwy)) +
+  geom_col()
+
+#내림차순 
+ggplot(data = drv_hwy, aes(x = reorder(drv, -mean_hwy),
+                           y = mean_hwy)) +
+  geom_col() +
+  labs(
+    title = "제목",
+    subtitle = "소제목",
+    x = "엑슨데요",
+    y = "와인데요",
+    caption = "출처좀"
+    
+  )
+
+```
+
+#x축과 y축의 범위 지정하기 
+```{r}
+ggplot(data = diamonds,
+       aes(x = carat,
+           y = price,)) +
+  geom_point ()
+ggplot(data = diamonds, aes(x = carat, y = price)) +
+  geom_point() +
+  xlim(0,3)+
+  ylim(0,18000)
+
+```
